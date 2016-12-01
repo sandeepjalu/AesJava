@@ -1,0 +1,46 @@
+<html>
+<head>
+<script type="text/javascript" src="./aes.js"></script>
+<script type="text/javascript" src="./pbkdf2.js"></script>
+</head>
+<body>
+<script>
+var encryptAES = function(req) {
+            var salt = CryptoJS.enc.Hex.parse("4acfedc7dc72a9003a0dd721d7642bde");//CryptoJS.lib.WordArray.random(128 / 8);
+            var iv = CryptoJS.enc.Hex.parse("69135769514102d0eded589ff874cacd");//CryptoJS.lib.WordArray.random(128 / 8);
+            var key128Bits100Iterations = CryptoJS.PBKDF2("Password", salt, {
+                keySize: 128 / 32,
+                iterations: 100
+            });
+            console.log('key128Bits100Iterations ' + key128Bits100Iterations);
+            var encrypted = CryptoJS.AES.encrypt(req, key128Bits100Iterations, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encrypted;
+        };
+        var decryptAES = function(encMsg) {
+            var salt = CryptoJS.enc.Hex.parse("4acfedc7dc72a9003a0dd721d7642bde");
+            //var salt = CryptoJS.lib.WordArray.random(128/8);
+            var iv = CryptoJS.enc.Hex.parse("69135769514102d0eded589ff874cacd");
+            var encrypted = encMsg;
+            var key = CryptoJS.PBKDF2("Password", salt, {
+                keySize: 128 / 32,
+                iterations: 100
+            });
+            console.log('key ' + key);
+            var decrypt = CryptoJS.AES.decrypt(encrypted, key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            var ddd = decrypt.toString(CryptoJS.enc.Utf8);
+            console.log('ddd ' + ddd);
+        };
+</script>
+Hello Here
+<div id="encMsg"></div></br>
+<div id="decMsg"></div>
+</body>
+</html>
